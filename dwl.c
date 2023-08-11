@@ -1707,7 +1707,8 @@ monocle(Monitor *m)
 	wl_list_for_each(c, &clients, link) {
 		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
 			continue;
-		resize(c, m->w, 0, !smartborders);
+		resize(c, (struct wlr_box){.x = m->w.x + m->gappx, .y = m->w.y + m->gappx,
+				.width = m->w.width - 2 * m->gappx, .height = m->w.height - 2 * m->gappx}, 0, !smartborders);
 		n++;
 	}
 	if (n)
