@@ -127,7 +127,7 @@ struct Client {
 #endif
 	unsigned int bw;
 	uint32_t tags;
-	int iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow;
+	int alwaysborder, iscentered, isfloating, isurgent, isfullscreen, isterm, noswallow;
 	uint32_t resize; /* configure serial of a pending resize */
 	pid_t pid;
 	Client *swallowing, *swallowedby;
@@ -220,6 +220,7 @@ typedef struct {
 	const char *id;
 	const char *title;
 	uint32_t tags;
+	int alwaysborder;
 	int iscentered;
 	int isfloating;
 	char scratchkey;
@@ -499,6 +500,7 @@ applyrules(Client *c)
 	for (r = rules; r < END(rules); r++) {
 		if ((!r->title || strstr(title, r->title))
 				&& (!r->id || strstr(appid, r->id))) {
+			c->alwaysborder = r->alwaysborder;
 			c->iscentered = r->iscentered;
 			c->isfloating = r->isfloating;
 			c->scratchkey = r->scratchkey;
@@ -1805,7 +1807,7 @@ monocle(Monitor *m)
 		if (!VISIBLEON(c, m) || c->isfloating || c->isfullscreen)
 			continue;
 		resize(c, (struct wlr_box){.x = m->w.x + m->gappx, .y = m->w.y + m->gappx,
-				.width = m->w.width - 2 * m->gappx, .height = m->w.height - 2 * m->gappx}, 0, !smartborders);
+				.width = m->w.width - 2 * m->gappx, .height = m->w.height - 2 * m->gappx}, 0, !smartborders || c->alwaysborder);
 		n++;
 	}
 	if (n)
@@ -2594,13 +2596,13 @@ tile(Monitor *m)
 			r = MIN(n, m->nmaster) - i;
 			h = (m->w.height - my - m->gappx*e - m->gappx*e * (r - 1)) / r;
 			resize(c, (struct wlr_box){.x = m->w.x + m->gappx*e, .y = m->w.y + my,
-				.width = mw - m->gappx*e, .height = h}, 0, draw_borders);
+				.width = mw - m->gappx*e, .height = h}, 0, draw_borders || c->alwaysborder);
 			my += c->geom.height + m->gappx*e;
 		} else {
 			r = n - i;
 			h = (m->w.height - ty - m->gappx*e - m->gappx*e * (r - 1)) / r;
 			resize(c, (struct wlr_box){.x = m->w.x + mw + m->gappx*e, .y = m->w.y + ty,
-				.width = m->w.width - mw - 2*m->gappx*e, .height = h}, 0, draw_borders);
+				.width = m->w.width - mw - 2*m->gappx*e, .height = h}, 0, draw_borders || c->alwaysborder);
 			ty += c->geom.height + m->gappx*e;
 		}
 		i++;
