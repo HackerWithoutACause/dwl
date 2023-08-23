@@ -642,6 +642,25 @@ axisnotify(struct wl_listener *listener, void *data)
 	/* This event is forwarded by the cursor when a pointer emits an axis event,
 	 * for example when you move the scroll wheel. */
 	struct wlr_pointer_axis_event *event = data;
+	struct wlr_keyboard* keyboard = wlr_seat_get_keyboard(seat);
+
+	printf("axis notify: %f\n", event->delta);
+	printf("%d == %d\n", CLEANMASK(wlr_keyboard_get_modifiers(keyboard)), CLEANMASK(WLR_MODIFIER_LOGO));
+
+	if (CLEANMASK(WLR_MODIFIER_LOGO) == CLEANMASK(wlr_keyboard_get_modifiers(keyboard))) {
+		const char *raise[] = { "change-volume-on-active", "+0.1", NULL };
+		const char *lower[] = { "change-volume-on-active", "-0.1", NULL };
+		Arg arg;
+
+		if(event->delta < 0.0 || event->delta_discrete < 0)
+			arg = (Arg){ .v = raise };
+		else
+			arg = (Arg){ .v = lower };
+
+		spawn(&arg);
+		return;
+	}
+	
 	IDLE_NOTIFY_ACTIVITY;
 	handlecursoractivity(true);
 	/* TODO: allow usage of scroll whell for mousebindings, it can be implemented
