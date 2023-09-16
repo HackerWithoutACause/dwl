@@ -5,16 +5,16 @@ static const int smartgaps                 = 0;  /* 1 means no outer gap when th
 static const int smartborders              = 1;
 static const unsigned int borderpx         = 3;  /* border pixel of windows */
 static const unsigned int gappx            = 6; /* horiz inner gap between windows */
-static const float bordercolor[]           = {0.082, 0.082, 0.082, 1.0};
-static const float focuscolor[]            = {0.415, 0.623, 0.709, 1.0};
+static const float bordercolor[]           = {0.0, 0.0, 0.0, 1.0};
+static const float focuscolor[]            = {1.0, 1.0, 1.0, 1.0};
 /* To conform the xdg-protocol, set the alpha to zero to restore the old behavior */
 static const float fullscreen_bg[]         = {0.1, 0.1, 0.1, 1.0};
 
 /* Autostart */
 static const char *const autostart[] = {
 	"foot", "--server", NULL,
-	"swayidle", "timeout", "300", "gtklock -t %I:%M %p -b /home/me/pictures/wallpaper-blured.png", "timeout", "600", "/home/me/.cache/cargo/release/dpms-off", NULL,
-	"swaybg", "-m", "fill", "-i", "/home/me/pictures/wallpaper.png", NULL,
+	"swayidle", "timeout", "600", "gtklock -t '%I:%M %p' -b /home/me/pictures/wallpaper-blured.png", "timeout", "300", "dpms-off", NULL,
+	"swaybg", "-m", "fill", "-i", "/home/me/pictures/kjogwzejxfmb1.png", NULL,
 	NULL /* terminate */
 };
 
